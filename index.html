@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Calculate VAT and reverse VAT online for free with CalcNest.">
+<title>CalcNest - Free Financial Calculators</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f7fb;
+    color: #1e293b;
+}
+header {
+    background: #142d4e;
+    color: white;
+    padding: 25px;
+    text-align: center;
+}
+header h1 {
+    margin: 0;
+    font-size: 36px;
+}
+main {
+    max-width: 650px;
+    margin: 35px auto;
+    padding: 20px;
+}
+.calculator {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px #00000010;
+}
+label {
+    display: block;
+    margin-top: 16px;
+    font-weight: bold;
+}
+input, select, button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    font-size: 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+}
+button {
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+    border: none;
+    margin-top: 20px;
+}
+button:hover {
+    background: #1d4ed8;
+}
+#result {
+    margin-top: 20px;
+    padding: 18px;
+    background: #eff6ff;
+    border-radius: 8px;
+    line-height: 1.8;
+    white-space: pre-line;
+}
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #64748b;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>CalcNest</h1>
+    <p>Smart Calculators. Simple Solutions.</p>
+</header>
+
+<main>
+<div class="calculator">
+
+<h2>VAT Calculator</h2>
+<p>Calculate VAT-inclusive and VAT-exclusive prices.</p>
+
+<label for="amount">Enter Amount</label>
+<input type="number" id="amount" min="0" step="any" value="100">
+
+<label for="rate">VAT Rate (%)</label>
+<input type="number" id="rate" min="0" step="any" value="20">
+
+<label for="mode">Calculation Type</label>
+<select id="mode">
+    <option value="add">Add VAT</option>
+    <option value="remove">Remove VAT</option>
+</select>
+
+<button onclick="calculateVAT()">Calculate</button>
+
+<div id="result" aria-live="polite">
+    Your results will appear here.
+</div>
+
+<p><small>Enter the applicable VAT rate. The default 20% rate is illustrative.</small></p>
+
+</div>
+
+<h2>How does VAT work?</h2>
+<p>Value Added Tax is a consumption tax applied to goods and services. This calculator helps you add or remove VAT from a price.</p>
+
+<p>Results are rounded to two decimal places for general informational purposes.</p>
+
+</main>
+
+<footer>
+    &copy; 2026 CalcNest. All rights reserved.
+</footer>
+
+<script>
+function calculateVAT() {
+    const amount = document.getElementById("amount").valueAsNumber;
+    const rate = document.getElementById("rate").valueAsNumber;
+    const mode = document.getElementById("mode").value;
+    const result = document.getElementById("result");
+
+    if (!Number.isFinite(amount) ||
+        !Number.isFinite(rate) ||
+        amount < 0 || rate < 0) {
+        result.textContent = "Please enter valid positive or zero values.";
+        return;
+    }
+
+    let net, vat, gross;
+
+    if (mode === "add") {
+        net = amount;
+        gross = amount * (1 + rate / 100);
+    } else {
+        gross = amount;
+        net = amount / (1 + rate / 100);
+    }
+
+    vat = gross - net;
+
+    if (!Number.isFinite(gross) || !Number.isFinite(vat)) {
+        result.textContent = "Amount is too large.";
+        return;
+    }
+
+    result.textContent =
+        "Net Amount: " + net.toFixed(2) +
+        "\nVAT Amount: " + vat.toFixed(2) +
+        "\nTotal Amount: " + gross.toFixed(2);
+}
+
+calculateVAT();
+</script>
+
+</body>
+</html>
