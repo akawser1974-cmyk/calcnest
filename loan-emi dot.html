@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Calculate monthly loan payments, total interest and total repayment with the free CalcNest Loan EMI Calculator.">
+<title>Loan EMI Calculator | CalcNest</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+body {
+    font-family: Arial, sans-serif;
+    background: #f1f5f9;
+    margin: 0;
+    color: #1e293b;
+}
+header {
+    background: #0f172a;
+    color: white;
+    text-align: center;
+    padding: 30px 15px;
+}
+header h1 {
+    margin: 0;
+}
+.container {
+    max-width: 650px;
+    margin: 30px auto;
+    padding: 15px;
+}
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+label {
+    display: block;
+    margin-top: 18px;
+    font-weight: bold;
+}
+input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 16px;
+}
+button {
+    width: 100%;
+    background: #2563eb;
+    color: white;
+    padding: 14px;
+    margin-top: 22px;
+    border: none;
+    border-radius: 6px;
+    font-size: 17px;
+    cursor: pointer;
+}
+button:hover {
+    background: #1d4ed8;
+}
+.result {
+    background: #eff6ff;
+    padding: 18px;
+    margin-top: 25px;
+    border-radius: 8px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+a {
+    color: #2563eb;
+}
+.info {
+    line-height: 1.7;
+    font-size: 15px;
+}
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #64748b;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>CalcNest</h1>
+    <p>Smart Calculators. Simple Solutions.</p>
+</header>
+
+<main class="container">
+
+<p><a href="index.html">Back to VAT Calculator</a></p>
+
+<div class="card">
+
+<h2>Loan EMI Calculator</h2>
+
+<p>Calculate your monthly loan payment, total interest and total repayment.</p>
+
+<label for="principal">Loan Amount</label>
+<input type="number" id="principal" value="100000" min="0" step="any">
+
+<label for="rate">Annual Interest Rate (%)</label>
+<input type="number" id="rate" value="10" min="0" step="any">
+
+<label for="months">Loan Duration (Months)</label>
+<input type="number" id="months" value="60" min="1" step="1">
+
+<button onclick="calculateEMI()">Calculate EMI</button>
+
+<div class="result" id="result" aria-live="polite">
+Enter your loan details to calculate.
+</div>
+
+<div class="info">
+
+<h3>What is EMI?</h3>
+
+<p>EMI stands for Equated Monthly Installment. It is the fixed monthly payment made towards repaying a loan, including principal and interest.</p>
+
+<h3>EMI Formula</h3>
+
+<p>EMI = P × r × (1 + r)^n / [(1 + r)^n − 1]</p>
+
+<p>
+P = Loan principal<br>
+r = Monthly interest rate (annual percentage rate divided by 1200)<br>
+n = Number of monthly repayments
+</p>
+
+<p>For zero-interest loans, EMI equals the loan amount divided by the number of months.</p>
+
+<p>This calculator supports any currency, provided all amounts use the same currency.</p>
+
+<p><small>Results are estimates based on a fixed interest rate, monthly repayments and a reducing loan balance. Fees, taxes and other lender charges are excluded.</small></p>
+
+</div>
+</div>
+</main>
+
+<footer>
+    &copy; 2026 CalcNest.
+</footer>
+
+<script>
+function calculateEMI() {
+    const p = parseFloat(document.getElementById("principal").value);
+    const annualRate = parseFloat(document.getElementById("rate").value);
+    const n = parseFloat(document.getElementById("months").value);
+    const result = document.getElementById("result");
+
+    if (!Number.isFinite(p) ||
+        !Number.isFinite(annualRate) ||
+        !Number.isSafeInteger(n) ||
+        p <= 0 ||
+        annualRate < 0 ||
+        n <= 0) {
+
+        result.textContent = "Please enter valid loan details and a whole number of months.";
+        return;
+    }
+
+    const r = annualRate / 1200;
+
+    const emi = r === 0
+        ? p / n
+        : p * r / (-Math.expm1(-n * Math.log1p(r)));
+
+    const total = emi * n;
+    const interest = Math.max(0, total - p);
+
+    if (!Number.isFinite(emi) || !Number.isFinite(total)) {
+        result.textContent = "Please enter smaller loan values.";
+        return;
+    }
+
+    function format(value) {
+        return value.toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    result.innerHTML =
+        "<strong>Monthly EMI: " + format(emi) + "</strong><br>" +
+        "Loan Principal: " + format(p) + "<br>" +
+        "Total Interest: " + format(interest) + "<br>" +
+        "Total Repayment: " + format(total);
+}
+
+calculateEMI();
+</script>
+
+</body>
+</html>
